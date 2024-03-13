@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %} Marketplace {% endblock %}
+
+{% block content %}
+
+<section id="search-bar" class="mt-5">
+    <form action="{% url 'find_data' %}" method="GET">
+        <div class="search-bar">
+            <input type="text" name="query" placeholder="Search..." required>
+            <button type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+        </div>
+    </form>
+</section>
+
+{% if results %}
+<script>
+    // Scroll to the search results section
+    window.onload = function() {
+        document.getElementById("search-results").scrollIntoView();
+    };
+</script>
+
+<div class="container bg-light mt-5">
+    <section id="search-results">
+        <h2 class='text-center text-dark'>Search Results</h2>
+        <div class="row">
+            {% for product in results %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="/media/{{ product.image }}" class="card-img-top" alt="{{ product.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">{{ product.description }}</p>
+                        <div class="rating">
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star"></span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p class="card-text"><strong>${{ product.price }}</strong></p>
+                            <a href="{{ product.file_path }}"> <i class="fa fa-download"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+{% elif request.GET.query %}
+<script>
+    // Scroll to the no result found alert
+    window.onload = function() {
+        document.getElementById("find-no-result-alert").scrollIntoView();
+    };
+</script>
+
+<div class="container mt-5">
+    <div class="alert alert-info" id="find-no-result-alert" role="alert">
+        <h4 class="alert-heading">No Result Found</h4>
+        <p class="mb-0">We couldn't find any results matching your search.</p>
+    </div>
+</div>
+{% else %}
+<!-- Display all listings -->
+<div class="container bg-light mt-5">
+    <section id="search-results">
+        {% comment %} <h2 class='text-center text-dark'>All Listings</h2> {% endcomment %}
+        <div class="row">
+            {% for product in products %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="/media/{{ product.image }}" class="card-img-top" alt="{{ product.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">{{ product.description }}</p>
+                        <div class="rating">
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star checked"></span>
+                            <span class="fa fa-star"></span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p class="card-text"><strong>${{ product.price }}</strong></p>
+                            <a href="{{ product.file_path }}"> <i class="fa fa-download"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endif %}
+
+{% endblock %}
+

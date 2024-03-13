@@ -1,0 +1,108 @@
+<!-- base.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Your Website Title{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{% static "images/logo.png" %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+     <!-- Bootstrap CSS -->
+     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+     <!-- Font Awesome -->
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+     
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+
+    <section class="container-fluid bg-light">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <img src="{% static 'images/logo.png' %}" class="logo" alt="Logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse " id="navbarNav">
+                <ul class="navbar-nav m-auto " id='navbar'>
+                    <li class="nav-item {% if request.path == '/' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item {% if request.path == '/find_data/' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'find_data' %}">Find Data</a>
+                    </li>
+                    <li class="nav-item {% if request.path == '/sellers/' %}active{% endif %}">
+                        <a class="nav-link" href="#">Share Data</a>
+                    </li>
+                    <li class="nav-item {% if request.path == '/community/' %}active{% endif %}">
+                        <a class="nav-link" href="#">Community</a>
+                    </li>
+                    <li class="nav-item {% if request.path == '/about/' %}active{% endif %}">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                    <li class="nav-item {% if request.path == '/contact/' %}active{% endif %}">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                    <li class="nav-item {% if request.path == '/cart/' %}active{% endif %}">
+                        <a class="nav-link" href="#"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </section>
+
+
+    <section id="content">
+        {% block content %}{% endblock %}
+    </section>
+
+    <section id="footer" class="section-p1">
+        <div class="col">
+            <img src="{% static 'images/logo.png' %}" class="logo">
+            <h4>Contact</h4>
+            <p><strong>Adress: </strong>1108 West Grace St. Apt 7, Richmond, Va, 23220</p>
+            <p><strong>Phone: </strong>(203) 912-0666</p>
+            <div class="follow">
+                <h4>Follow us</h4>
+                <div class="icon">
+                    <a href="https://twitter.com/pairitnet" target="_blank"><i class="fa fa-twitter"></i></a>
+                    <a href="https://www.reddit.com/user/pairitnet/" target="_blank"><i class="fa fa-reddit"></i></a>
+                 </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <h4>About</h4>
+            <a href="#">About Us</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms & Conditions</a>
+            <a href="#">Contact Us</a>
+        </div>
+
+        <div class="col">
+            <h4>My Account</h4>
+            <a href="#">Sign In</a>
+            <a href="#">View Cart</a>
+            <a href="#">Favorites</a>
+            <a href="#">Help</a>
+        </div>
+
+        <div class="col">
+            <h4>Secure Payment Processing</h4>
+            <img src="{% static 'images/secure_payment.jpg' %}" class="logo">
+        </div>
+    </section>
+
+    <script src="{% static 'script.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+
+</html>
