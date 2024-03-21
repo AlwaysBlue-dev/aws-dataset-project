@@ -100,7 +100,7 @@ setTimeout(function() {
                         <span class="review-no">{{product.total_ratings}} reviews</span>
                     </div>
                     <p class="product-description">{{product.description}}</p>
-                    <h4 class="price">Current Price: <span>$ {{product.price}}</span></h4>
+                    <h4 class="price">Current Price: <span class="text-primary">$ {{product.price}}</span></h4>
                     
                     
                     <div class="action">
@@ -240,7 +240,7 @@ setTimeout(function() {
                         <span class="review-no">{{ listing.total_ratings }} reviews</span>
                     </div>
                     <p class="product-description">{{ listing.dataset_description }}</p>
-                    <h4 class="price">Current Price: <span>$ {{ listing.dataset_price }}</span></h4>
+                    <h4 class="price" >Current Price: <span class="text-primary"> {{ listing.dataset_price }}</span></h4>
                     
                     <div class="action">
                         <a href="/media/{{ listing.dataset_file_path}}" style="font-size: 24px;">
