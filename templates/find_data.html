@@ -13,7 +13,8 @@
     </form>
 </section>
 
-{% if results %}
+
+{% if product_results %}
 <script>
     // Scroll to the search results section
     window.onload = function() {
@@ -25,34 +26,176 @@
     <section id="search-results">
         <h2 class='text-center text-dark'>Search Results</h2>
         <div class="row">
-            {% for product in results %}
-            <div class="col-md-4 mb-4">
+            {% for product in product_results %}
+            <div class="col-md-4 mb-4"  id="product1">
                 <div class="card h-100">
                     <img src="/media/{{ product.image }}" class="card-img-top" alt="{{ product.name }}">
                     <div class="card-body">
-                        <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="card-text">{{ product.description }}</p>
-                        <div class="rating">
-                            <span class="fa fa-star checked"></span>
-                            <span class="fa fa-star checked"></span>
-                            <span class="fa fa-star checked"></span>
-                            <span class="fa fa-star checked"></span>
+                        <h5 class="card-title text-center">{{ product.name }}</h5>
+                        <a href='/find_data/{{product.id}}/{{product.username}}/'>show more</a>
+                        <div class="rating text-center">
+                            {% if product.avg_ratings == 0 %}
+                            <i class="fa fa-star-o" aria-hidden="true"></i>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            
+
+                        {% elif product.avg_ratings >= 1 and product.avg_ratings < 2 %}
+                            <span class="fa fa-star "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            
+                        {% elif product.avg_ratings >= 2 and product.avg_ratings < 3 %}
                             <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                        {% elif product.avg_ratings >= 3 and product.avg_ratings < 4 %}
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                        {% elif product.avg_ratings >= 4 and product.avg_ratings < 5 %}
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star-o "></span>
+                        {% elif product.avg_ratings >= 5 and product.avg_ratings < 6 %}
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                        {% else %} 
+                            <span class="fa fa-star-half-o"></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                        
+                        {% endif %}
                         </div>
+                        <small class="text-muted">Posted by: admin</small>
                     </div>
+                    {% comment %} <div>
+                        <button class="btn btn-sm btn-link text-danger" style="font-size: 14px; padding: 5px 10px;" onclick="openRatingModal('{{ product.id }}')">Give Rating</button>
+                    </div> {% endcomment %}
                     <div class="card-footer">
                         <div class="d-flex justify-content-between align-items-center">
+                            {%if product.price == 0%}
+                            <p class="card-text"><strong>FREE</strong></p>
+                            {%else%}
                             <p class="card-text"><strong>${{ product.price }}</strong></p>
+                            {%endif%}
                             <a href="{{ product.file_path }}"> <i class="fa fa-download"></i></a>
                         </div>
                     </div>
                 </div>
             </div>
+           
             {% endfor %}
         </div>
     </section>
 </div>
 
+{% elif listing_results %}
+<script>
+    // Scroll to the listing results section
+    window.onload = function() {
+        document.getElementById("listing-results").scrollIntoView();
+    };
+</script>
+
+<!-- Listing Results -->
+<div class="container bg-light mt-5">
+    <section id="listing-results">
+        <h2 class='text-center text-dark'>Search Results</h2>
+        <div class="row">
+            {% for listing in listing_results %}
+            <div class="col-md-4 mb-4" id="product1">
+                <div class="card h-100">
+                    <img src="/media/{{ listing.dataset_image }}" class="card-img-top" alt="{{ listing.dataset_name }}">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">{{ listing.dataset_name }}</h5>
+                        <a href='/find_data/{{listing.id}}/{{listing.username.username}}/'>show more</a>
+                        <div class="rating text-center">
+                            {% if listing.avg_ratings == 0 %}
+                            <i class="fa fa-star-o" aria-hidden="true"></i>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            
+
+                        {% elif listing.avg_ratings >= 1 and listing.avg_ratings < 2 %}
+                            <span class="fa fa-star "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            
+                        {% elif listing.avg_ratings >= 2 and listing.avg_ratings < 3 %}
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                        {% elif listing.avg_ratings >= 3 and listing.avg_ratings < 4 %}
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                        {% elif listing.avg_ratings >= 4 and listing.avg_ratings < 5 %}
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star-o "></span>
+                        {% elif listing.avg_ratings >= 5 and listing.avg_ratings < 6 %}
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                        {% else %} 
+                            <span class="fa fa-star-half-o"></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                        
+                        {% endif %}
+                        </div>
+                        <small class="text-muted">{{ listing.username.username }}</small>
+                    </div>
+                    {% comment %} <div>
+                        <button class="btn btn-sm btn-link text-danger" style="font-size: 14px; padding: 5px 10px;" onclick="openRatingModal2('{{ listing.id }}')">Give Rating</button>
+                    </div> {% endcomment %}
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between align-items-center">
+                            {%if listing.dataset_price == 0%}
+                            <p class="card-text"><strong>FREE</strong></p>
+                            {%else%}
+                            <p class="card-text"><strong>${{ listing.dataset_price }}</strong></p>
+                            {%endif%}
+                            <a href="/media/{{ listing.dataset_file_path }}"> <i class="fa fa-download"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% endfor %}
+        </div>
+    </section>
+</div>
 {% elif request.GET.query %}
 <script>
     // Scroll to the no result found alert
@@ -63,39 +206,179 @@
 
 <div class="container mt-5">
     <div class="alert alert-info" id="find-no-result-alert" role="alert">
-        <h4 class="alert-heading">No Result Found</h4>
-        <p class="mb-0">We couldn't find any results matching your search.</p>
+        <h4 class="alert-heading text-center">No Result Found</h4>
+        <p class="mb-0 text-center">We couldn't find any results matching your search.</p>
     </div>
 </div>
 {% else %}
-<!-- Display all listings -->
+<!-- Display all listings and products -->
 <div class="container bg-light mt-5">
     <section id="search-results">
-        {% comment %} <h2 class='text-center text-dark'>All Listings</h2> {% endcomment %}
         <div class="row">
             {% for product in products %}
-            <div class="col-md-4 mb-4">
+            <div class="col-md-4 mb-4"  id="product1">
                 <div class="card h-100">
                     <img src="/media/{{ product.image }}" class="card-img-top" alt="{{ product.name }}">
                     <div class="card-body">
-                        <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="card-text">{{ product.description }}</p>
-                        <div class="rating">
-                            <span class="fa fa-star checked"></span>
-                            <span class="fa fa-star checked"></span>
-                            <span class="fa fa-star checked"></span>
-                            <span class="fa fa-star checked"></span>
-                            <span class="fa fa-star"></span>
+                        <h5 class="card-title text-center">{{ product.name }}</h5>
+                        {% comment %} <span class="card-description-toggle" onclick="toggleDescription('{{ product.id }}')">Show Description</span>
+                        <div id="description_{{ product.id }}" style="display: none;">
+                            <p class="card-text text-center">{{ product.description }}</p>
+                        </div> {% endcomment %}
+                        <a href='/find_data/{{product.id}}/{{product.username}}/'>show more</a>
+                        <div class="rating text-center">
+                
+                       
+                            {% if product.avg_ratings == 0 %}
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                
+    
+                            {% elif product.avg_ratings >= 1 and product.avg_ratings < 2 %}
+                                <span class="fa fa-star "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                
+                            {% elif product.avg_ratings >= 2 and product.avg_ratings < 3 %}
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                            {% elif product.avg_ratings >= 3 and product.avg_ratings < 4 %}
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                            {% elif product.avg_ratings >= 4 and product.avg_ratings < 5 %}
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star-o "></span>
+                            {% elif product.avg_ratings >= 5 and product.avg_ratings < 6 %}
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                               
+                            {% else %} 
+                                <span class="fa fa-star-half-o"></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                            
+                            {% endif %}
+                                
+                            </div>
+                            <small class="text-muted">Posted by: admin</small>
                         </div>
-                    </div>
+                            {% comment %} <div>
+                                <button class="btn btn-sm btn-link text-danger" style="font-size: 14px; padding: 5px 10px;" onclick="openRatingModal('{{ product.id }}')">Give Rating</button>
+                            </div> {% endcomment %}
+                       
+                 
                     <div class="card-footer">
                         <div class="d-flex justify-content-between align-items-center">
+                            {%if product.price == 0%}
+                            <p class="card-text"><strong>FREE</strong></p>
+                            {%else%}
                             <p class="card-text"><strong>${{ product.price }}</strong></p>
+                            {%endif%}
                             <a href="{{ product.file_path }}"> <i class="fa fa-download"></i></a>
                         </div>
                     </div>
                 </div>
             </div>
+          
+            {% endfor %}
+            {% for listing in listings %}
+            <div class="col-md-4 mb-4"  id="product1">
+                <div class="card h-100">
+                    <img src="/media/{{ listing.dataset_image }}" class="card-img-top" alt="{{ listing.dataset_name }}">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">{{ listing.dataset_name }}</h5>
+                        {% comment %} <span class="card-description-toggle" onclick="toggleDescription('{{ listing.id }}')">Show Description</span>
+                        <div id="description_{{ listing.id }}" style="display: none;">
+                            <p class="card-text text-center">{{ listing.dataset_description }}</p>
+                        </div> {% endcomment %}
+                        <a href='/find_data/{{listing.id}}/{{listing.username.username}}/'>show more</a>
+                        <div class="rating text-center">
+                            {% if listing.avg_ratings == 0 %}
+                            <i class="fa fa-star-o" aria-hidden="true"></i>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            
+
+                        {% elif listing.avg_ratings >= 1 and listing.avg_ratings < 2 %}
+                            <span class="fa fa-star "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            
+                        {% elif listing.avg_ratings >= 2 and listing.avg_ratings < 3 %}
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                        {% elif listing.avg_ratings >= 3 and listing.avg_ratings < 4 %}
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                        {% elif listing.avg_ratings >= 4 and listing.avg_ratings < 5 %}
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star-o "></span>
+                        {% elif listing.avg_ratings >= 5 and listing.avg_ratings < 6 %}
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                            <span class="fa fa-star"></span>
+                           
+                        {% else %} 
+                            <span class="fa fa-star-half-o"></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                            <span class="fa fa-star-o "></span>
+                        
+                        {% endif %}
+                        </div>
+                        <small class="text-muted">Posted by: {{listing.username.username}}</small>
+                    </div>
+                    {% comment %} <div>
+                        <button class="btn btn-sm btn-link text-danger" style="font-size: 14px; padding: 5px 10px;" onclick="openRatingModal2('{{ listing.id }}')">Give Rating</button>
+                    </div> {% endcomment %}
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between align-items-center">
+                            {%if listing.dataset_price == 0%}
+                            <p class="card-text"><strong>FREE</strong></p>
+                            {%else%}
+                            <p class="card-text"><strong>${{ listing.dataset_price }}</strong></p>
+                            {%endif%}
+                            <a href="/media/{{ listing.dataset_file_path }}"> <i class="fa fa-download"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             {% endfor %}
         </div>
     </section>
@@ -103,4 +386,3 @@
 {% endif %}
 
 {% endblock %}
-

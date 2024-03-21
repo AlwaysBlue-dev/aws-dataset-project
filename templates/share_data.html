@@ -1,0 +1,501 @@
+{% extends 'base.html' %}
+
+{% block title %} Manage Products {% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-md-2">
+            <ul class="nav flex-column nav-pills" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="add-product-tab" data-toggle="tab" href="#add-product" role="tab" aria-controls="add-product" aria-selected="true">Add Listing</a>
+                </li>
+                {%if not aws_listings%}
+                <li class="nav-item">
+                    <a class="nav-link" id="update-product-tab" data-toggle="tab" href="#update-product" role="tab" aria-controls="update-product" aria-selected="false">Update Listing</a>
+                </li>
+                {%endif%}
+                <li class="nav-item">
+                    <a class="nav-link" id="all-product-tab" data-toggle="tab" href="#all-product" role="tab" aria-controls="all-product" aria-selected="false">All Listings</a>
+                </li>
+            </ul>
+        </div>
+    <div class="col-md-10">
+        {% if messages %}
+        <div class="alert alert-success alert-dismissible fade show text-center" id="msg" role="alert">
+            {% for message in messages %}
+            <strong>{{ message }}</strong>
+            {% endfor %}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endif %}
+        <script>
+            // Automatically hide the "No Result Found" alert after 10 seconds
+            setTimeout(function() {
+                document.getElementById("msg").style.display = "none";
+            }, 6000);
+        </script>               
+    <div class="tab-content mt-4" id="myTabContent">         
+        <div class="tab-pane fade show active" id="add-product" role="tabpanel" aria-labelledby="add-product-tab">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    
+                    <h2 class="text-center font-weight-bold text-success">Add</h2>
+                    
+                    <form method="post" action="{% url 'add_data' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="form-group">
+                            <label for="name" class="font-weight-bold">Name<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Name of the dataset" value="{{ name }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description" class="font-weight-bold">Description<span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="description" name="description" placeholder="Details about the dataset" rows="3" required>{{ description }}</textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="price" class="font-weight-bold">Price (USD)</label>
+                            <input type="number" class="form-control" id="price" name="price" value='0' style="width: 150px"; readonly>
+                            <small class="form-text text-muted">*We are only selling free products for now</small>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="image" class="font-weight-bold">Upload Image<span class="text-danger">*</span></label>
+                                    
+                                    <div class="input-group">
+                                        <label class="input-group-btn font-weight-bold">
+                                            <span class="btn btn-dark">
+                                                <i class="fa fa-upload"></i> Upload
+                                                <input type="file" id="image" name="image" style="display: none;" onchange="updateFileName(this);" required>
+                                            </span>
+                                            <small class="form-text text-muted">*Supported file types: </br><strong>.jpg, .jpeg, .png</strong></small>
+                                        </label>
+                                        <input type="text" class="form-control" id="file-name" readonly style="display: none;">
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="file" class="font-weight-bold">Upload Data<span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <label class="input-group-btn font-weight-bold">
+                                            <span class="btn btn-dark">
+                                                <i class="fa fa-upload"></i> Upload
+                                                <input type="file" id="file"  name="file" style="display: none;" onchange="updateFileName2(this);" required>
+                                            </span>
+                                            <small class="form-text text-muted">*Supported file types:  </br> <strong>.csv, .xlsx</strong></small>
+                                        </label>
+                                      
+                                        <input type="text" class="form-control" id="file-name2" readonly style="display: none;">
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="file" class="font-weight-bold" style="display: inline;">Upload Datasheet<span class="text-danger"></span></label>
+                                    <div class="input-group">
+                                        <label class="input-group-btn font-weight-bold">
+                                            <span class="btn btn-dark mt-2">
+                                                <i class="fa fa-upload"></i> Upload
+                                                <input type="file" id="datasheet"  name="datas-sheet" style="display: none;" onchange="updateFileName3(this);">
+                                            </span>
+                                            <small class="form-text text-muted">*Supported file types:  </br> <strong>.pdf, .docx</strong></small>
+                                        </label>
+                                      
+                                        <input type="text" class="form-control" id="file-name3" readonly style="display: none;">
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                       
+                        
+                        <button type="submit" class="btn btn-primary mx-auto d-block mb-3 mt-3">List Now</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+       
+        <div class="tab-pane fade" id="update-product" role="tabpanel" aria-labelledby="update-product-tab">
+             <div class="row justify-content-center">
+                <div class="col-md-8">
+                  
+            <h2 class="text-center font-weight-bold text-success">Update</h2>
+            <form method="post" action="{% url 'update_data' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                   
+                    <label for="selectField">Select Listing<span class="text-danger">*</span></label>
+                    <select class="form-control" id="selectField" name="selectField" required>
+                        <option value="">Select an option</option>
+                       
+                        {% for user_listing in user_listings %}
+                            <option value="{{ user_listing.id }}">{{ user_listing.dataset_name }}</option>
+                        {% endfor %}
+                      
+                    </select>
+                </div>
+                
+                <div id="listing-details" style="display: none;">
+                   
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="listing-name" class="form-control" name="name">
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea class="form-control" id="listing-description" name="description" rows="3"></textarea>
+                </div>
+               
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="image" class="font-weight-bold">Update Image</label>
+                            
+                            <div class="input-group">
+                                <label class="input-group-btn font-weight-bold">
+                                    <span class="btn btn-dark">
+                                        <i class="fa fa-upload"></i> Upload
+                                        <input type="file" id="image" name="image" style="display: none;" onchange="listingImage(this);" >
+                                    </span>
+                                    <small class="form-text text-muted">*Supported file types: <br> <strong>.jpg, .jpeg, .png</strong></small>
+                                </label>
+                                <input type="text" class="form-control" name="file-image" id="listing-image" readonly style="display: none;">
+                               
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="file" class="font-weight-bold">Update Data</label>
+                            <div class="input-group">
+                                <label class="input-group-btn font-weight-bold">
+                                    <span class="btn btn-dark">
+                                        <i class="fa fa-upload"></i> Upload
+                                        <input type="file" id="file"  name="file" style="display: none;" onchange="listingData(this);">
+                                    </span>
+                                    <small class="form-text text-muted">*Supported file types: <br> <strong>.csv, .xlsx</strong></small>
+                                </label>
+                              
+                                <input type="text" class="form-control" name ="file-data" id="listing-data" readonly style="display: none;">
+                               
+                            </div>
+                           
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="file" class="font-weight-bold">Update Datasheet</label>
+                            <div class="input-group">
+                                <label class="input-group-btn font-weight-bold">
+                                    <span class="btn btn-dark">
+                                        <i class="fa fa-upload"></i> Upload
+                                        <input type="file" id="listing-datasheet"  name="listing-datasheet" style="display: none;" onchange="listingDataSheet(this);">
+                                    </span>
+                                    <small class="form-text text-muted">*Supported file types: <br> <strong>.pdf, docx</strong></small>
+                                </label>
+                              
+                                <input type="text" class="form-control" name ="listing-datasheet" id="listing-datasheet-display" readonly style="display: none;">
+                               
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <button type="submit" class="btn btn-primary mx-auto d-block mb-3 mt-3">Update Now</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="tab-pane fade" id="all-product" role="tabpanel" aria-labelledby="all-product">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="container bg-light mt-5">
+                <section id="all-product-section" class="section-p1">
+                    <div class="row">
+                        {% if user_listings %}
+                        {% for product in user_listings %}
+                        <div class="col-md-4 mb-4" id="product{{ product.id }}">
+                            <div class="card h-100">
+                                <img src="/media/{{ product.dataset_image }}" class="card-img-top" alt="{{ product.dataset_name }}">
+                                <div class="card-body">
+                                    <h5 class="card-title text-center">{{ product.dataset_name }}</h5>
+                                {% comment %} <center><span class="card-description-toggle text-center" onclick="toggleDescription('{{ product.id }}')">Show Description</span></center> 
+                                    <div id="description_{{ product.id }}" style="display: none;"> 
+                                    <center><small class="card-text text-center">{{ product.dataset_description }}</small></center> 
+                                    </div> {% endcomment %}
+                                    <div class="rating text-center">
+                                        {% if product.avg_ratings == 0 %}
+                                            <i class="fa fa-star-o" aria-hidden="true"></i>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                        {% elif product.avg_ratings >= 1 and product.avg_ratings < 2 %}
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                        {% elif product.avg_ratings >= 2 and product.avg_ratings < 3 %}
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                        {% elif product.avg_ratings >= 3 and product.avg_ratings < 4 %}
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                        {% elif product.avg_ratings >= 4 and product.avg_ratings < 5 %}
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star-o"></span>
+                                        {% elif product.avg_ratings >= 5 and product.avg_ratings < 6 %}
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                        {% else %} 
+                                            <span class="fa fa-star-half-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                        {% endif %}
+                                    </div>
+                                  <center><small class="text-muted">Posted by: {{ product.username }}</small></center>
+                                </div>
+                                <a href="#" class="btn btn-danger" id="deleteButton{{ product.id }}" data-toggle="modal" data-target="#deleteModal{{ product.id }}">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                                <div class="card-footer">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        {%if product.dataset_price == 0%}
+                                        <p class="card-text"><strong>FREE</strong></p>
+                                        {%else%}
+                                        <p class="card-text"><strong>${{product.dataset_price }}</strong></p>
+                                        {%endif%}
+                                        <a href="{{ product.dataset_file_path }}"> <i class="fa fa-download"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                            // Attach click event listener to the delete button
+                            document.getElementById('deleteButton{{ product.id }}').addEventListener('click', function() {
+                                showAlert();
+                            });
+                    
+                            function showAlert() {
+                                alert("Please contact admin for delete listing");
+                            }
+                        </script>
+                        {% endfor %}
+                        {% elif aws_listings %}
+
+                        <div class="container mb-2">
+                                <small class="text-muted">*Info: Admin can update and delete listing from admin panel</small>
+                        </div>
+                        
+                       
+                        {% for product in aws_listings %}
+                        <div class="col-md-4 mb-4" id="product{{ product.id }}">
+                            <div class="card h-100">
+                                <img src="/media/{{ product.image }}" class="card-img-top" alt="{{ product.name }}">
+                                <div class="card-body">
+                                    <h5 class="card-title text-center">{{ product.name }}</h5>
+                                 {% comment %} <center><span class="card-description-toggle text-center" onclick="toggleDescription('{{ product.id }}')">Show Description</span></center> 
+                                     <div id="description_{{ product.id }}" style="display: none;"> 
+                                     <center><small class="card-text text-center">{{ product.description }}</small></center> 
+                                    </div> {% endcomment %}
+                                    <div class="rating text-center">
+                                        {% if product.avg_ratings == 0 %}
+                                            <i class="fa fa-star-o" aria-hidden="true"></i>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                        {% elif product.avg_ratings >= 1 and product.avg_ratings < 2 %}
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                        {% elif product.avg_ratings >= 2 and product.avg_ratings < 3 %}
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                        {% elif product.avg_ratings >= 3 and product.avg_ratings < 4 %}
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                        {% elif product.avg_ratings >= 4 and product.avg_ratings < 5 %}
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star-o"></span>
+                                        {% elif product.avg_ratings >= 5 and product.avg_ratings < 6 %}
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                            <span class="fa fa-star"></span>
+                                        {% else %} 
+                                            <span class="fa fa-star-half-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                            <span class="fa fa-star-o"></span>
+                                        {% endif %}
+                                    </div>
+                                  <center><small class="text-muted">Posted by: {{ product.username }}</small></center>
+                                </div>
+                                {% comment %} <a href="#" class="btn btn-danger" id="deleteButton{{ product.id }}" data-toggle="modal" data-target="#deleteModal{{ product.id }}">
+                                    <i class="fa fa-trash"></i>
+                                </a> {% endcomment %}
+                                <div class="card-footer">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        {%if product.price == 0%}
+                                    <p class="card-text"><strong>FREE</strong></p>
+                                    {%else%}
+                                    <p class="card-text"><strong>${{product.price }}</strong></p>
+                                    {%endif%}
+                                    <a href="/media/{{ product.file_path }}"> <i class="fa fa-download"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% comment %} <script>
+                            // Attach click event listener to the delete button
+                            document.getElementById('deleteButton{{ product.id }}').addEventListener('click', function() {
+                                showAlert();
+                            });
+                    
+                            function showAlert() {
+                                alert("Please contact admin for delete listing");
+                            }
+                        </script> {% endcomment %}
+                        {% endfor %}
+                        {% else %}
+                        <div class="container">
+                            <div class="alert alert-info" id="find-no-result-alert" role="alert">
+                                <h4 class="alert-heading">No Listing Found</h4>
+                                <p class="mb-0">We couldn't find any listings for you.</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+                   
+  
+{% block extra_scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    function updateFileName(input) {
+        var fileName = input.files[0].name;
+        document.getElementById('file-name').value = fileName;
+        document.getElementById('file-name').style.display = 'block';
+    }
+    function updateFileName2(input) {
+        var fileName = input.files[0].name;
+        document.getElementById('file-name2').value = fileName;
+        document.getElementById('file-name2').style.display = 'block';
+    }
+    function updateFileName3(input) {
+        var fileName = input.files[0].name;
+        document.getElementById('file-name3').value = fileName;
+        document.getElementById('file-name3').style.display = 'block';
+    }
+  
+    function listingImage(input) {
+        var fileName = input.files[0].name;
+        document.getElementById('listing-image').value = fileName;
+        document.getElementById('listing-image').style.display = 'block';
+    }
+    function listingData(input) {
+        var fileName = input.files[0].name;
+        document.getElementById('listing-data').value = fileName;
+        document.getElementById('listing-data').style.display = 'block';
+    }
+    function listingDataSheet(input) {
+        var fileName = input.files[0].name;
+        document.getElementById('listing-datasheet-display').value = fileName;
+        document.getElementById('listing-datasheet-display').style.display = 'block';
+    }
+
+
+</script>
+
+<script>
+$(document).ready(function() {
+    $('#selectField').change(function() {
+        var listingId = $(this).val();
+        if (listingId) {
+            $.ajax({
+                type: 'GET',
+                url: '/get_listing_details/', // Update this URL with your Django view endpoint
+                data: {'listing_id': listingId},
+                dataType: 'json', // Ensure that the response is parsed as JSON
+                success: function(response) {
+                    $('#listing-name').val(response.dataset_name);
+                    $('#listing-description').val(response.dataset_description);
+                    $('#listing-image').val(response.dataset_image);
+                    $('#listing-data').val(response.dataset_file_path);
+                    $('#listing-data').val(response.dataseheet_file_path);
+                    $('#listing-details').show();
+                    // Set the value of the image input field
+                    //var imageFileName = response.dataset_image.split('/').pop(); // Get the file name from the URL
+                    //$('#listing-image').val(imageFileName);
+                    //$('#listing-image').show(); // Show the input field
+
+                    // Set the value of the data input field
+                    //var dataFileName = response.dataset_file_path.split('/').pop(); // Get the file name from the URL
+                    //('#listing-data').val(dataFileName);
+                    //$('#listing-data').show(); // Show the input field
+
+                    //$('#listing-details').show();
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        } else {
+            $('#listing-details').hide();
+        }
+    });
+});
+
+
+function closeAlert() {
+    document.getElementById('deleteAlert').style.display = 'none';
+}
+</script>
+
+{% endblock %}
+{% endblock %}

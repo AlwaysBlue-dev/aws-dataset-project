@@ -1,0 +1,327 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Product Detail {% endblock %}
+
+{% block extra_head %} <link rel="stylesheet" href="{% static 'prod_info.css' %}">{% endblock %}
+
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center" role="alert" id="rating-submitted">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %}
+{% endif %}
+<script>
+setTimeout(function() {
+   
+    document.getElementById("rating-submitted").style.display = "none";
+}, 4000);
+
+    // Scroll to the search results section
+    window.onload = function() {
+        document.getElementById("rating-submitted").scrollIntoView();
+    };
+
+</script>
+{%if product%}
+<div class="container mt-5 mb-5">
+    <div class="card">
+        <div class="container-fluid">
+            <div class="wrapper row">
+                <div class="preview col-md-6">
+                    <div class="preview-pic tab-content mt-3">
+                        <div class="tab-pane active" id="pic-1"><img src="/media/{{product.image}}" /></div>
+                        <!-- Add more image tabs as needed -->
+                    </div>
+                    {% comment %} <ul class="preview-thumbnail nav nav-tabs">
+                        <li class="active"><a data-target="#pic-1" data-toggle="tab"><img src="" /></a></li>
+                        <!-- Add more thumbnail tabs as needed -->
+                    </ul> {% endcomment %}
+                </div>
+                <div class="details col-md-6">
+                    <h3 class="product-title">{{product.name}}</h3>
+                    <div class="rating">
+                        <div class="stars">
+                            <div class="rating">
+                                {% if product.avg_ratings == 0 %}
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                
+    
+                            {% elif product.avg_ratings >= 1 and product.avg_ratings < 2 %}
+                                <span class="fa fa-star "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                
+                            {% elif product.avg_ratings >= 2 and product.avg_ratings < 3 %}
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                            {% elif product.avg_ratings >= 3 and product.avg_ratings < 4 %}
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                            {% elif product.avg_ratings >= 4 and product.avg_ratings < 5 %}
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star-o "></span>
+                            {% elif product.avg_ratings >= 5 and product.avg_ratings < 6 %}
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                            {% else %} 
+                                <span class="fa fa-star-half-o"></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                            
+                            {% endif %}
+                            </div>
+                        </div>
+                        <span class="review-no">{{product.total_ratings}} reviews</span>
+                    </div>
+                    <p class="product-description">{{product.description}}</p>
+                    <h4 class="price">Current Price: <span>$ {{product.price}}</span></h4>
+                    
+                    
+                    <div class="action">
+                        <a href="{{ product.file_path }}" style="font-size: 24px;">
+                            <i class="fa fa-download"></i> Download Dataset
+                        </a>
+                        
+                        {% comment %} <button class="add-to-cart btn btn-default" type="button">Dow</button> {% endcomment %}
+                        
+                    </div>
+                    <div class="action mt-2">
+                        {%if product.datasheet_file_path%}
+                        <a href="/media/{{ product.datasheet_file_path }}" style="font-size: 24px;">
+                            <i class="fa fa-download"></i> Download Datasheet
+                        </a>
+                        {% else %}
+                            <small class="text-muted">No datasheet available</small>
+                        {% endif %}
+                        
+                        {% comment %} <button class="add-to-cart btn btn-default" type="button">Dow</button> {% endcomment %}
+                        
+                    </div>
+                    <div class="action mt-5">
+                        <button style="color: #000;" class="btn btn-sm btn-link"  onclick="openRatingModal('{{ product.id }}')">Data Quality Rating</a></button>
+                        
+                        {% comment %} <button class="add-to-cart btn btn-default" type="button">Dow</button> {% endcomment %}
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Rating Modal -->
+<div class="modal fade" id="ratingModal" tabindex="-1" role="dialog" aria-labelledby="ratingModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ratingModalLabel">Give Rating</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="form-group">
+                    {% comment %} <label for="rating">Rating:</label> {% endcomment %}
+                    <form  method="POST" action="{% url 'rating' %}">
+                        {% csrf_token %}
+                        <select class="form-control" id="rating" name="rating" required>
+                            <option value="">Select an option</option>
+                            <option value="1">★☆☆☆☆ Poor</option>
+                            <option value="2">★★☆☆☆ Fair</option>
+                            <option value="3">★★★☆☆ Good</option>
+                            <option value="4">★★★★☆ Very Good</option>
+                            <option value="5">★★★★★ Excellent</option>
+                        </select>
+                        <input type="hidden" id="productId" name="product_id" value="{{product.id}}">
+                        <input type="hidden" name="username" value="{{product.username}}">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary" >Submit</button>
+                            
+                        </div>
+                    </form>
+                
+                </div>
+            </div>
+        
+        </div>
+    </div>
+</div>
+{% endif %}
+{% if listing %}
+<div class="container mt-5 mb-5">
+    <div class="card">
+        <div class="container-fluid">
+            <div class="wrapper row">
+                <div class="preview col-md-6  mt-3">
+                    <div class="tab-pane active" id="pic-1"><img src="/media/{{listing.dataset_image}}" /></div>
+                </div>
+                <div class="details col-md-6">
+                    <h3 class="product-title">{{ listing.dataset_name }}</h3>
+                    <div class="rating">
+                        <div class="stars">
+                            <div class="rating">
+                                {% if listing.avg_ratings == 0 %}
+                                <i class="fa fa-star-o" aria-hidden="true"></i>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                
+    
+                            {% elif listing.avg_ratings >= 1 and listing.avg_ratings < 2 %}
+                                <span class="fa fa-star "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                
+                            {% elif listing.avg_ratings >= 2 and listing.avg_ratings < 3 %}
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                            {% elif listing.avg_ratings >= 3 and listing.avg_ratings < 4 %}
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                            {% elif listing.avg_ratings >= 4 and listing.avg_ratings < 5 %}
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star-o "></span>
+                            {% elif listing.avg_ratings >= 5 and listing.avg_ratings < 6 %}
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
+                               
+                            {% else %} 
+                                <span class="fa fa-star-half-o"></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                                <span class="fa fa-star-o "></span>
+                            
+                            {% endif %}
+                            </div>
+                        </div>
+                        <span class="review-no">{{ listing.total_ratings }} reviews</span>
+                    </div>
+                    <p class="product-description">{{ listing.dataset_description }}</p>
+                    <h4 class="price">Current Price: <span>$ {{ listing.dataset_price }}</span></h4>
+                    
+                    <div class="action">
+                        <a href="/media/{{ listing.dataset_file_path}}" style="font-size: 24px;">
+                            <i class="fa fa-download"></i> Download Dataset
+                        </a>
+                        
+                        {% comment %} <button class="add-to-cart btn btn-default" type="button">Dow</button> {% endcomment %}
+                        
+                    </div>
+                    <div class="action mt-2">
+                        {%if listing.datasheet_file_path%}
+                        <a href="/media/{{ listing.datasheet_file_path }}" style="font-size: 24px;">
+                            <i class="fa fa-download"></i> Download Datasheet
+                        </a>
+                        {% else %}
+                        <small class="text-muted">No datasheet available</small>
+                         {% endif %}
+                        {% comment %} <button class="add-to-cart btn btn-default" type="button">Dow</button> {% endcomment %}
+                        
+                    </div>
+                    <div class="action mt-5">
+                        <button style="color: #000;" class="btn btn-sm btn-link"  onclick="openRatingModal2('{{ listing.id }}')">Data Quality Rating</a></button>
+                        
+                        {% comment %} <button class="add-to-cart btn btn-default" type="button">Dow</button> {% endcomment %}
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ <!-- Rating Modal -->
+ <div class="modal fade" id="ratingModal2" tabindex="-1" role="dialog" aria-labelledby="ratingModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ratingModalLabel">Give Rating</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="form-group">
+                    {% comment %} <label for="rating">Rating:</label> {% endcomment %}
+                    <form  method="POST" action="{% url 'rating' %}">
+                        {% csrf_token %}
+                        <select class="form-control" id="rating" name="rating" required>
+                            <option value="">Select an option</option>
+                            <option value="1">★☆☆☆☆ Poor</option>
+                            <option value="2">★★☆☆☆ Fair</option>
+                            <option value="3">★★★☆☆ Good</option>
+                            <option value="4">★★★★☆ Very Good</option>
+                            <option value="5">★★★★★ Excellent</option>
+                        </select>
+                        <input type="hidden" id="listingId" name="listing_id" value="{{listing.id}}">
+                        <input type="hidden" name="username" value="{{listing.username}}">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary" >Submit</button>
+                            
+                        </div>
+                    </form>
+                
+                </div>
+            </div>
+        
+        </div>
+    </div>
+</div>
+{%endif%}
+
+<script>
+
+    function openRatingModal(productId) {
+        $('#productId').val(productId);
+        $('#ratingModal').modal('show');
+    }
+    function openRatingModal2(productId) {
+        $('#listingId').val(productId);
+        $('#ratingModal2').modal('show');
+    }
+</script>
+{% endblock %}

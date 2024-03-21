@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %} Signup {% endblock %}
+
+{% block content %}
+
+<section id="signup" class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 mt-3 mb-3">
+            <div class="login-form">
+                <h2 class="text-center">Sign up</h2>
+                {% if error %}
+                    <p class="text-danger">{{ error }}</p>
+                {% endif %}
+                <form action="#" method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <small class="text-muted">Username should be unique.</small>
+                        <input type="text" name="username" class="form-control" placeholder="Username (e.g., john_doe123)" value="{{ username }}" required>
+                    </div>
+                    <div class="form-group">
+                        <small class="text-muted">Enter a valid email address.</small>
+                        <input type="email" name="email" class="form-control" placeholder="Email Address (e.g., example@example.com)" value="{{ email }}" required>
+                    </div>
+                    <div class="form-group">
+                        <small class="text-muted">Password should be at least 6 characters long.</small>
+                        <input type="password" name="password" class="form-control" placeholder="Password (at least 6 characters)" required>
+                    </div>
+                    <div class="form-group">
+                        <small class="text-muted">Please re-enter your password.</small>
+                        <input type="password" name="cpassword" class="form-control" placeholder="Confirm Password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Sign up</button>
+                </form>
+                <p class="text-center">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+    
+{% endblock %}

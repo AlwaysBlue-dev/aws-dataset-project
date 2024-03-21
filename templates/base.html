@@ -36,8 +36,8 @@
                     <li class="nav-item {% if request.path == '/find_data/' %}active{% endif %}">
                         <a class="nav-link" href="{% url 'find_data' %}">Find Data</a>
                     </li>
-                    <li class="nav-item {% if request.path == '/sellers/' %}active{% endif %}">
-                        <a class="nav-link" href="#">Share Data</a>
+                    <li class="nav-item {% if request.path == '/share_data/' %}active{% endif %}">
+                        <a class="nav-link" href="{%url 'share_data'%}">Share Data</a>
                     </li>
                     <li class="nav-item {% if request.path == '/community/' %}active{% endif %}">
                         <a class="nav-link" href="#">Community</a>
@@ -48,9 +48,30 @@
                     <li class="nav-item {% if request.path == '/contact/' %}active{% endif %}">
                         <a class="nav-link" href="#">Contact</a>
                     </li>
+                    
+                    {% if user.is_authenticated %}
                     <li class="nav-item {% if request.path == '/cart/' %}active{% endif %}">
                         <a class="nav-link" href="#"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
                     </li>
+                    <li class="nav-item dropdown{% if request.path == '/profile/' %}active{% endif %}">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-user" aria-hidden="true"></i> {{ user.username }} <span class="caret"></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-left" aria-labelledby="navbarDropdown">
+                            {% comment %} <a class="dropdown-item" href="#">Your Profile</a>
+                            <div class="dropdown-divider"></div> {% endcomment %}
+                            <a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
+                        </div>  
+                    </li>
+                    {% else %}
+                    <li class="nav-item {% if request.path == '/login/' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item {% if request.path == '/cart/' %}active{% endif %}">
+                        <a class="nav-link" href="#"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+                    </li>
+                    {% endif %}
+                    
                 </ul>
             </div>
         </nav>
