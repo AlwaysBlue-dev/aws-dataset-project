@@ -17,7 +17,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['datahouse-f779cd00b380.herokuapp.com']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -40,11 +40,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-<<<<<<< HEAD
      'whitenoise.middleware.WhiteNoiseMiddleware',
-=======
-    'whitenoise.middleware.WhiteNoiseMiddleware',
->>>>>>> b35e53ff7fc5c9e83471686d9a3be2b90d786ace
 ]
 
 ROOT_URLCONF = 'DataSetWeb.urls'
@@ -128,20 +124,17 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
 STATICFILES_DIRS = [
-<<<<<<< HEAD
   
-=======
-   
->>>>>>> b35e53ff7fc5c9e83471686d9a3be2b90d786ace
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-
 MEDIA_ROOT= os.path.join(BASE_DIR, "media")
 MEDIA_URL="/media/"
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Load environment variables from .env file
 load_dotenv()
