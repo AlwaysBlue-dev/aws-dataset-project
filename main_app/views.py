@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Product, Listing
-from django.db.models import Q, Avg, F
+from django.shortcuts import render, redirect
+from .models import Product, Listing, UserProfile, UserPurchasedItem
+from django.db.models import Q
 from .get_s3_urls import get_s3_object_urls, save_urls_to_database
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
@@ -9,6 +9,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
 from django.http import JsonResponse
+import stripe
+from django.conf import settings
+import json
 
 def home(request):
     # Fetch all products from the database
@@ -301,3 +304,143 @@ def prod_info(request, product_id, username):
         context = {'listing': listing}
     
     return render(request, 'product_info.html', context)
+
+@login_required(login_url='/login/') 
+def account(request):
+    user = request.user
+    username = user.username
+    try:
+        profile = UserProfile.objects.get(username=user)
+    except UserProfile.DoesNotExist:
+        profile = None
+
+    if request.method == 'POST':
+        avatar = request.FILES.get('avatar')
+        first_name = request.POST.get('first-name')
+        last_name = request.POST.get('last-name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        country = request.POST.get('country')
+        city = request.POST.get('city')
+        facebook = request.POST.get('facebook')
+        instagram = request.POST.get('city')
+        twitter = request.POST.get('twitter')
+
+        # Check if avatar file is provided and has valid image extension
+        if avatar:
+            if not avatar.name.lower().endswith(('.jpg', '.jpeg', '.png')):
+                messages.error(request, 'Please upload a valid image file (jpg, jpeg, or png).')
+                return redirect('account')
+
+        if profile:
+            # If profile exists, update it
+           
+            profile.avatar = avatar if avatar else profile.avatar
+            profile.first_name = first_name
+            profile.last_name = last_name
+            profile.email = email
+            profile.phone = phone
+            profile.country = country
+            profile.city = city
+            profile.facebook_link = facebook
+            profile.instagram_link = instagram
+            profile.twitter_link  = twitter
+            profile.save()
+        else:
+            # If profile doesn't exist, create a new one
+            profile = UserProfile.objects.create(
+                username=user,
+                avatar=avatar,
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+                phone=phone,
+                country=country,
+                city=city,
+                facebook_link = facebook,
+                instagram_link = instagram,
+                twitter_link = twitter
+            )
+
+        messages.success(request, 'Profile updated successfully.')
+
+    context = {
+        'profile': profile,
+        'username': username
+    }
+
+    return render(request, 'account.html', context)
+
+@login_required(login_url='/login/') 
+def cart(request):
+    return render(request, 'cart.html')
+
+@login_required(login_url='/login/') 
+def generate_payment_link(request):
+    if request.method == 'POST':
+        cart = request.POST.get('cart')
+        if not cart:
+            return JsonResponse({'error': 'Cart is empty.'}, status=400)
+
+        # Parse cart data and calculate total price
+        cart = json.loads(cart)
+        line_items = []
+        total_price = 0
+        for item in cart:
+            line_items.append({
+                'price_data': {
+                    'currency': 'usd',
+                    'product_data': {
+                        'name': item['name'],
+                    },
+                    'unit_amount': int(float(item['price']) * 100),  # Convert price to cents
+                },
+                'quantity': 1,
+            })
+            total_price += float(item['price'])
+
+        # Generate a payment link using Stripe
+        stripe.api_key = settings.STRIPE_TEST_SECRET_KEY 
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=line_items,
+            mode='payment',
+            success_url='http://127.0.0.1:8000/payment_success/',  # Redirect URL after successful payment
+            cancel_url='http://yourwebsite.com/cancel/',    # Redirect URL if the user cancels the payment
+        )
+        request.session['pending_purchase'] = cart
+        return JsonResponse({'payment_url': session.url})
+
+    else:
+        return redirect('login')
+
+@login_required(login_url='/login/') 
+def payment_success(request):
+    # Retrieve stored purchase details from session
+    cart = request.session.get('pending_purchase')
+    if cart:
+        for item in cart:
+            # Create entry in the database for each item in the cart
+            UserPurchasedItem.objects.create(
+                user=request.user,
+                item_id=item.get('id'),
+                item_name=item.get('name'),
+                item_price=item.get('price'),
+                item_posted_by=item.get('owner'),
+            )
+
+        # Clear the stored cart from session after successful purchase
+        del request.session['pending_purchase']
+
+        return JsonResponse({'message': 'Payment successful and purchase details saved.'})
+    else:
+        return JsonResponse({'error': 'No items found in the cart.'})
+
+def community(request):
+    return render(request, 'community.html')
+
+def about(request):
+    return render(request, 'about.html')
+
+def contact(request):
+    return render(request, 'contact.html')

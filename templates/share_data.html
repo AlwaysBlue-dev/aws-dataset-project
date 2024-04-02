@@ -290,7 +290,7 @@
                                         {%else%}
                                         <p class="card-text"><strong>${{product.dataset_price }}</strong></p>
                                         {%endif%}
-                                        <a href="{{ product.dataset_file_path }}"> <i class="fa fa-download"></i></a>
+                                        <a href="/media/{{ product.dataset_file_path }}"> <i class="fa fa-download"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -380,7 +380,7 @@
                                     {%else%}
                                     <p class="card-text"><strong>${{product.price }}</strong></p>
                                     {%endif%}
-                                    <a href="/media/{{ product.file_path }}"> <i class="fa fa-download"></i></a>
+                                    <a href="{{ product.file_path }}"> <i class="fa fa-download"></i></a>
                                     </div>
                                 </div>
                             </div>

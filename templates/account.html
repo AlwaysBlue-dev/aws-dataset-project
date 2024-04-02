@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Account {% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'user_account.css' %}">{% endblock %}
+{% block content %}
+<div class="container rounded bg-white mt-5 mb-5">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#profile">Profile</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="edit-tab" data-toggle="tab" href="#edit">Edit</a>
+        </li>
+    </ul>
+
+    <div class="tab-content mt-3">
+        <div class="tab-pane fade show active" id="profile">
+            <div class="row">
+                <div class="col-md-3 border-right">
+                    <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                    
+                        <img class="rounded-circle mt-5" width="150px" src="{% if profile.avatar %}{{ profile.avatar.url }}{% else %}{% static 'images/user.jpg' %}{% endif %}">
+                        {% comment %} <div class="form-group">
+                            <label class="btn btn-info profile-button mt-3">Change Avatar</label>
+                            <input type="file" style="display:none">
+                        </div> {% endcomment %}
+                        <span class="font-weight-bold">{{username}}</span>
+                        {% comment %} <span class="text-black-50">edogaru@mail.com.my</span> {% endcomment %}
+                        <div class="form-group">
+                            {% comment %} <label class="labels">Facebook</label> {% endcomment %}
+                            <div class="input-group mt-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text facebook">
+                                        <i class="fa fa-facebook text-white"></i>
+                                    </span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Facebook link" value="{{profile.facebook_link}}" disabled>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {% comment %} <label class="labels">Instagram</label> {% endcomment %}
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text instagram">
+                                        <i class="fa fa-instagram text-white"></i>
+                                    </span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Instagram link" value="{{profile.instagram_link}}" disabled>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {% comment %} <label class="labels">Twitter</label> {% endcomment %}
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text twitter">
+                                        <i class="fa fa-twitter text-white"></i>
+                                    </span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Twitter link" value="{{profile.twitter_link}}" disabled>
+                            </div>
+                        </div>
+                      
+                    </div>
+                </div>
+                <div class="col-md-9 ">
+                    <div class="p-3 py-5">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="text-right">Profile Details</h4>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="labels">First Name</label>
+                                    <input type="text" class="form-control" placeholder="First name" value="{{profile.first_name}}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="labels">Last Name</label>
+                                    <input type="text" class="form-control" value="{{profile.last_name}}" placeholder="Last name" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="labels">Email</label>
+                                    <input type="email" class="form-control" value="{{profile.email}}" placeholder="Email" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="labels">Phone</label>
+                                    <input type="number" class="form-control" placeholder="Phone" value="{{profile.phone}}" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="labels">Country</label>
+                                    <input type="text" class="form-control" placeholder="Country" value="{{profile.country}}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="labels">City</label>
+                                    <input type="text" class="form-control" placeholder="City" value="{{profile.city}}" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="edit">
+            <div class="row">
+                <div class="col-md-3 border-right">
+                    <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                        <img class="rounded-circle mt-5" width="150px" src="{% if profile.avatar %}{{ profile.avatar.url }}{% else %}{% static 'images/user.jpg' %}{% endif %}">
+
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="avatar" class="btn btn-info profile-button mt-3">Change Avatar</label>
+                                <input type="file" name="avatar" id="avatar" style="display: none;" onchange="displayFileName()">
+                                <span id="file-name"></span>
+                            </div>
+                            <div class="form-group">
+                                {% comment %} <label class="labels">Facebook</label> {% endcomment %}
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text facebook">
+                                            <i class="fa fa-facebook text-white"></i>
+                                        </span>
+                                    </div>
+                                    <input type="text" name="facebook" class="form-control" placeholder="Facebook link" value="{{profile.facebook_link}}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {% comment %} <label class="labels">Instagram</label> {% endcomment %}
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text instagram">
+                                            <i class="fa fa-instagram text-white"></i>
+                                        </span>
+                                    </div>
+                                    <input type="text" name="instagram" class="form-control" placeholder="Instagram link"  value="{{profile.instagram_link}}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {% comment %} <label class="labels">Twitter</label> {% endcomment %}
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text twitter">
+                                            <i class="fa fa-twitter text-white"></i>
+                                        </span>
+                                    </div>
+                                    <input type="text" name="twitter" class="form-control" placeholder="Twitter link"  value="{{profile.twitter_link}}">
+                                </div>
+                            </div>
+                            <!-- Other input fields for user details -->
+                      
+                    </div>
+                </div>
+                <div class="col-md-9 ">
+                    <div class="p-3 py-5">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="text-right">Edit Profile</h4>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="labels">First Name</label>
+                                    <input type="text" name="first-name" class="form-control" placeholder="First name" value="{{profile.first_name}}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="labels">Last Name</label>
+                                    <input type="text" name="last-name" class="form-control" value="{{profile.last_name}}" placeholder="Last name">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="labels">Email</label>
+                                    <input type="email" name="email" class="form-control" placeholder="Email" value="{{profile.email}}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="labels">Phone</label>
+                                    <input type="number" name="phone" class="form-control" placeholder="Phone" value="{{profile.phone}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="labels">Country</label>
+                                    <input type="text" name="country" class="form-control" placeholder="Country" value="{{profile.country}}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="labels">City</label>
+                                    <input type="text" name="city" class="form-control" placeholder="City" value="{{profile.city}}">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Other input fields for user details -->
+                        <div class="mt-5 text-center">
+                            <button class="btn btn-primary profile-button" type="submit">Save Changes</button>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function displayFileName() {
+        const input = document.getElementById('avatar');
+        const fileName = input.files[0].name;
+        const fileNameSpan = document.getElementById('file-name');
+        fileNameSpan.innerText = fileName;
+    }
+</script>
+{% endblock %}

@@ -105,10 +105,11 @@
                         <div class="d-flex justify-content-between align-items-center">
                             {%if product.price == 0%}
                             <p class="card-text"><strong>FREE</strong></p>
+                            <a href="{{ product.file_path }}"> <i class="fa fa-download"></i></a>
                             {%else%}
                             <p class="card-text"><strong>${{ product.price }}</strong></p>
+                            <button class="btn btn-sm btn-primary" onclick="addToCart('{{ product.id }}', '{{ product.name }}', '{{ product.price }}', '{{product.username}}')">Add to Cart</button>
                             {%endif%}
-                            <a href="{{ product.file_path }}"> <i class="fa fa-download"></i></a>
                         </div>
                     </div>
                 </div>
@@ -186,11 +187,12 @@
                             
                             {%if listing.dataset_price == 0%}
                             <p class="card-text"><strong>FREE</strong></p>
+                            <a href="/media/{{ listing.dataset_file_path }}"> <i class="fa fa-download"></i></a>
                             {%else%}
                             <p class="card-text"><strong>${{listing.dataset_price }}</strong></p>
+                            <button class="btn btn-sm btn-primary" onclick="addToCart('{{ listing.id }}', '{{ listing.dataset_name }}', '{{ listing.dataset_price }}', '{{listing.username}}')">Add to Cart</button>
                             {%endif%}
                             <!-- Add appropriate link for the file_path of the listing -->
-                            <a href="/media/{{ listing.dataset_file_path }}"> <i class="fa fa-download"></i></a>
                         </div>
                     </div>
                 </div>
@@ -297,10 +299,11 @@
                         <div class="d-flex justify-content-between align-items-center">
                             {%if product.price == 0%}
                             <p class="card-text"><strong>FREE</strong></p>
+                            <a href="{{ product.file_path }}"> <i class="fa fa-download"></i></a>
                             {%else%}
                             <p class="card-text"><strong>${{ product.price }}</strong></p>
+                            <button class="btn btn-sm btn-primary" onclick="addToCart('{{ product.id }}', '{{ product.name }}', '{{ product.price }}', '{{product.username}}')">Add to Cart</button>
                             {%endif%}
-                            <a href="{{ product.file_path }}"> <i class="fa fa-download"></i></a>
                         </div>
                     </div>
                 </div>
@@ -389,10 +392,11 @@
                         <div class="d-flex justify-content-between align-items-center">
                             {%if product.price == 0%}
                             <p class="card-text"><strong>FREE</strong></p>
+                            <a href="{{ product.file_path }}"> <i class="fa fa-download"></i></a>
                             {%else%}
                             <p class="card-text"><strong>${{ product.price }}</strong></p>
+                            <button class="btn btn-sm btn-primary" onclick="addToCart('{{ product.id }}', '{{ product.name }}', '{{ product.price }}', '{{product.username}}')">Add to Cart</button>
                             {%endif%}
-                            <a href="{{ product.file_path }}"> <i class="fa fa-download"></i></a>
                         </div>
                     </div>
                 </div>
@@ -432,6 +436,41 @@
     }
     
 
+</script>
+
+
+<script>
+  
+        document.addEventListener('DOMContentLoaded', function () {
+            var addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+    
+            addToCartButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    var productId = this.getAttribute('data-product-id');
+                    var productName = this.getAttribute('data-product-name');
+                    var productPrice = this.getAttribute('data-product-price');
+                    var productOwner = this.getAttribute('data-product-owner');
+    
+                    // Call function to add the product to the cart
+                    addToCart(productId, productName, productPrice, productOwner);
+                });
+            });
+        });
+    
+        function addToCart(productId, productName, productPrice, productOwner) {
+            var cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.push({
+                id: productId,
+                name: productName,
+                price: productPrice,
+                owner: productOwner
+            });
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert('Product added to cart!');
+            // Optionally, update the UI to reflect the addition to the cart
+        }
+
+    
 </script>
 
 

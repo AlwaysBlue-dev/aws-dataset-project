@@ -1,0 +1,53 @@
+/* body {
+    background: rgb(99, 39, 120)
+} */
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #BA68C8
+}
+
+.profile-button {
+    background:#007bff;
+    box-shadow: none;
+    border: none
+}
+
+.profile-button:hover {
+    background:#D2122E;
+}
+
+.profile-button:focus {
+    background: #682773; 
+    box-shadow: none
+}
+
+.profile-button:active {
+    background: #682773; 
+    box-shadow: none
+}
+
+.back:hover {
+    color: #682773;
+    cursor: pointer
+}
+
+/* .labels {
+    font-size: 11px
+} */
+
+.instagram{
+    background:linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
+}
+.facebook{
+    background-color: #1877F2;
+}
+.twitter{
+    background-color: #1DA1F2;
+}
+.add-experience:hover {
+    background: #BA68C8;
+    color: #fff;
+    cursor: pointer;
+    border: solid 1px #BA68C8
+}

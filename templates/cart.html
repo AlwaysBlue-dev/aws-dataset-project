@@ -1,0 +1,92 @@
+<!-- Cart Template -->
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Cart {% endblock %}
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'cart.css' %}">
+{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>Your Cart</h2>
+    <hr>
+    <div id="cart-items">
+        <!-- Cart items will be displayed here -->
+    </div>
+    <div class="cart-total">
+        Total: <span id="cart-total"></span>
+    </div>
+    <button class="checkout-button mb-5" onclick="generatePaymentLink()">Proceed to Checkout</button>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    // Retrieve cart items from local storage
+    var cart = JSON.parse(localStorage.getItem('cart')) || [];
+    var cartItemsContainer = document.getElementById('cart-items');
+    var cartTotalElement = document.getElementById('cart-total');
+    var cartTotal = 0;
+
+    // Function to remove an item from the cart
+    function removeItemFromCart(index) {
+        cart.splice(index, 1); // Remove the item from the cart array
+        renderCart(); // Re-render the cart to reflect the changes
+    }
+
+    // Function to render the cart items
+    function renderCart() {
+        cartItemsContainer.innerHTML = ''; // Clear the existing cart items
+        cartTotal = 0; // Reset the total price
+
+        // Iterate through cart items and display them
+        cart.forEach(function (item, index) {
+            var cartItemDiv = document.createElement('div');
+            cartItemDiv.classList.add('cart-item');
+            cartItemDiv.innerHTML = `
+                <div class="cart-item-details">
+                    <h4>${item.name}</h4>
+                    <p>Price: ${item.price}</p>
+                </div>
+                <i onclick="removeItemFromCart(${index})" class="fa fa-trash delete-icon text-danger"></i>`;
+            cartItemsContainer.appendChild(cartItemDiv);
+
+            // Update total price
+            cartTotal += parseFloat(item.price.replace('$', ''));
+        });
+
+        // Display total price
+        cartTotalElement.textContent = '$' + cartTotal.toFixed(2);
+        
+        // Update local storage with the modified cart
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    // Render the cart when the page loads
+    renderCart();
+
+    function generatePaymentLink() {
+        var cart = JSON.parse(localStorage.getItem('cart'));
+        if (!cart || cart.length === 0) {
+            alert("Your cart is empty!");
+            return;
+        }
+        // Make an AJAX request to your Django view to generate a payment link
+        $.ajax({
+            url: '/generate_payment_link/',
+            type: 'POST',
+            data: {
+                'cart': JSON.stringify(cart),
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(data) {
+                // Redirect the user to the Stripe Checkout page
+                window.location.href = data.payment_url;
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+</script>
+{% endblock %}

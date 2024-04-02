@@ -17,7 +17,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['datahouse-f779cd00b380.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main_app.apps.MainAppConfig',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -40,7 +41,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://*',  # Allow HTTP requests from all origins
+    'https://*',  # Allow HTTPS requests from all origins
 ]
 
 ROOT_URLCONF = 'DataSetWeb.urls'
@@ -67,23 +74,26 @@ WSGI_APPLICATION = 'DataSetWeb.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+#MySQL
+DATABASES = {
+   'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'pairit_db',
+        'HOST': 'localhost',
+        'PORT': '3307',
+        'USER': 'root',
+        'PASSWORD': 'root',
+    }
+}
+
+#Sqlite
 # DATABASES = {
-#    'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'pairit_db',
-#         'HOST': 'localhost',
-#         'PORT': '3307',
-#         'USER': 'root',
-#         'PASSWORD': 'root',
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -126,15 +136,13 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_DIRS = [
-  
+    BASE_DIR / "static"
 ]
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_ROOT= os.path.join(BASE_DIR, "media")
 MEDIA_URL="/media/"
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Load environment variables from .env file
 load_dotenv()
@@ -147,4 +155,5 @@ AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com'
 
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STRIPE_TEST_PUBLISHABLE_KEY ='pk_test_51OqqIED1kmQ8Ji4RghIVKS4NNOp9XYyX7isPSeQGEUFvBZYak1EQ6oqPWtxkx8EyHwenpWZfsqcMZKoA9QHkJZKY00nlVpuqvn'
+STRIPE_TEST_SECRET_KEY ='sk_test_51OqqIED1kmQ8Ji4RVWsyqdNbZZfsGH4zWxWU9MSYvielIuB4gOXZODz9PvnkzfOYJDE0ech4ngUdhw5o2lfTIRzg002uTdl02L'

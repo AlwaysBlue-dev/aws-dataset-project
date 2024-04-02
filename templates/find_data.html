@@ -2,6 +2,10 @@
 
 {% block title %} Marketplace {% endblock %}
 
+{% block extra_head %}
+
+{% endblock %}
+
 {% block content %}
 
 <section id="search-bar" class="mt-5">
@@ -91,10 +95,11 @@
                         <div class="d-flex justify-content-between align-items-center">
                             {%if product.price == 0%}
                             <p class="card-text"><strong>FREE</strong></p>
+                            <a href="{{ product.file_path }}"> <i class="fa fa-download"></i></a>
                             {%else%}
                             <p class="card-text"><strong>${{ product.price }}</strong></p>
+                            <button class="btn btn-sm btn-primary" onclick="addToCart('{{ product.id }}', '{{ product.name }}', '{{ product.price }}', '{{product.username}}')">Add to Cart</button>
                             {%endif%}
-                            <a href="{{ product.file_path }}"> <i class="fa fa-download"></i></a>
                         </div>
                     </div>
                 </div>
@@ -183,11 +188,12 @@
                         <div class="d-flex justify-content-between align-items-center">
                             {%if listing.dataset_price == 0%}
                             <p class="card-text"><strong>FREE</strong></p>
+                            <a href="/media/{{ listing.dataset_file_path }}"> <i class="fa fa-download"></i></a>
                             {%else%}
                             <p class="card-text"><strong>${{ listing.dataset_price }}</strong></p>
+                            <button class="btn btn-sm btn-primary" onclick="addToCart('{{ listing.id }}', '{{ listing.dataset_name }}', '{{ listing.dataset_price }}', '{{listing.username}}')">Add to Cart</button>
                             {%endif%}
-                            <a href="/media/{{ listing.dataset_file_path }}"> <i class="fa fa-download"></i></a>
-                        </div>
+                        </div>  
                     </div>
                 </div>
             </div>
@@ -220,7 +226,7 @@
                 <div class="card h-100">
                     <img src="/media/{{ product.image }}" class="card-img-top" alt="{{ product.name }}">
                     <div class="card-body">
-                        <h5 class="card-title text-center">{{ product.name }}</h5>
+                        <h5 class="card-title text-center" id="product-name-{{ product.id }}">{{ product.name }}</h5>
                         {% comment %} <span class="card-description-toggle" onclick="toggleDescription('{{ product.id }}')">Show Description</span>
                         <div id="description_{{ product.id }}" style="display: none;">
                             <p class="card-text text-center">{{ product.description }}</p>
@@ -290,10 +296,11 @@
                         <div class="d-flex justify-content-between align-items-center">
                             {%if product.price == 0%}
                             <p class="card-text"><strong>FREE</strong></p>
-                            {%else%}
-                            <p class="card-text"><strong>${{ product.price }}</strong></p>
-                            {%endif%}
                             <a href="{{ product.file_path }}"> <i class="fa fa-download"></i></a>
+                            {%else%}
+                            <p class="card-text" id="product-price-{{ product.id }}"><strong>${{ product.price }}</strong></p>
+                            <button class="btn btn-sm btn-primary" onclick="addToCart('{{ product.id }}', '{{ product.name }}', '{{ product.price }}', '{{product.username}}')">Add to Cart</button>
+                            {%endif%}
                         </div>
                     </div>
                 </div>
@@ -305,7 +312,7 @@
                 <div class="card h-100">
                     <img src="/media/{{ listing.dataset_image }}" class="card-img-top" alt="{{ listing.dataset_name }}">
                     <div class="card-body">
-                        <h5 class="card-title text-center">{{ listing.dataset_name }}</h5>
+                        <h5 class="card-title text-center" id="product-name-{{ listing.id }}">{{ listing.dataset_name }}</h5>
                         {% comment %} <span class="card-description-toggle" onclick="toggleDescription('{{ listing.id }}')">Show Description</span>
                         <div id="description_{{ listing.id }}" style="display: none;">
                             <p class="card-text text-center">{{ listing.dataset_description }}</p>
@@ -370,10 +377,11 @@
                         <div class="d-flex justify-content-between align-items-center">
                             {%if listing.dataset_price == 0%}
                             <p class="card-text"><strong>FREE</strong></p>
-                            {%else%}
-                            <p class="card-text"><strong>${{ listing.dataset_price }}</strong></p>
-                            {%endif%}
                             <a href="/media/{{ listing.dataset_file_path }}"> <i class="fa fa-download"></i></a>
+                            {%else%}
+                            <p class="card-text" id="product-price-{{ listing.id }}"><strong>${{ listing.dataset_price }}</strong></p>
+                            <button class="btn btn-sm btn-primary" onclick="addToCart('{{ listing.id }}', '{{ listing.dataset_name }}', '{{ listing.dataset_price }}', '{{listing.username}}')">Add to Cart</button>
+                            {%endif%}
                         </div>
                     </div>
                 </div>
@@ -384,5 +392,42 @@
     </section>
 </div>
 {% endif %}
+
+{% endblock %}
+{% block extra_scripts %}
+
+<script>
+  
+        document.addEventListener('DOMContentLoaded', function () {
+            var addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+    
+            addToCartButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    var productId = this.getAttribute('data-product-id');
+                    var productName = this.getAttribute('data-product-name');
+                    var productPrice = this.getAttribute('data-product-price');
+                    var productOwner = this.getAttribute('data-product-owner');
+    
+                    // Call function to add the product to the cart
+                    addToCart(productId, productName, productPrice, productOwner);
+                });
+            });
+        });
+    
+        function addToCart(productId, productName, productPrice, productOwner) {
+            var cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.push({
+                id: productId,
+                name: productName,
+                price: productPrice,
+                owner: productOwner
+            });
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert('Product added to cart!');
+            // Optionally, update the UI to reflect the addition to the cart
+        }
+
+    
+</script>
 
 {% endblock %}

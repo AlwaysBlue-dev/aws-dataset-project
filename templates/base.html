@@ -40,36 +40,38 @@
                         <a class="nav-link" href="{%url 'share_data'%}">Share Data</a>
                     </li>
                     <li class="nav-item {% if request.path == '/community/' %}active{% endif %}">
-                        <a class="nav-link" href="#">Community</a>
+                        <a class="nav-link" href="{%url 'community'%}">Community</a>
                     </li>
                     <li class="nav-item {% if request.path == '/about/' %}active{% endif %}">
-                        <a class="nav-link" href="#">About</a>
+                        <a class="nav-link" href="{%url 'about'%}">About</a>
                     </li>
                     <li class="nav-item {% if request.path == '/contact/' %}active{% endif %}">
-                        <a class="nav-link" href="#">Contact</a>
+                        <a class="nav-link" href="{%url 'contact'%}">Contact</a>
                     </li>
                     
                     {% if user.is_authenticated %}
                     <li class="nav-item {% if request.path == '/cart/' %}active{% endif %}">
-                        <a class="nav-link" href="#"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+                        <a class="nav-link" href="{% url 'cart' %}"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
                     </li>
                     <li class="nav-item dropdown{% if request.path == '/profile/' %}active{% endif %}">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-user" aria-hidden="true"></i> {{ user.username }} <span class="caret"></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-left" aria-labelledby="navbarDropdown">
-                            {% comment %} <a class="dropdown-item" href="#">Your Profile</a>
-                            <div class="dropdown-divider"></div> {% endcomment %}
-                            <a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout</a>
-                        </div>  
+                            <a class="dropdown-item" href="{% url 'account' %}"><i class="fa fa-user" aria-hidden="true"></i> Account</a>
+                            <div class="dropdown-divider"></div> 
+                            <a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout </a>
+                        </div>
+                         
                     </li>
                     {% else %}
                     <li class="nav-item {% if request.path == '/login/' %}active{% endif %}">
                         <a class="nav-link" href="{% url 'login' %}">Login</a>
                     </li>
-                    <li class="nav-item {% if request.path == '/cart/' %}active{% endif %}">
-                        <a class="nav-link" href="#"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
-                    </li>
+                    
+                    {% comment %} <li class="nav-item {% if request.path == '/cart/' %}active{% endif %}">
+                        <a class="nav-link" href="{% url 'cart' %}"><i class="fa fa-shopping-cart" aria-hidden="true"></i></a>
+                    </li> {% endcomment %}
                     {% endif %}
                     
                 </ul>
@@ -82,7 +84,7 @@
         {% block content %}{% endblock %}
     </section>
 
-    <section id="footer" class="section-p1">
+     <section id="footer" class="section-p1">
         <div class="col">
             <img src="{% static 'images/logo.png' %}" class="logo">
             <h4>Contact</h4>
@@ -117,7 +119,7 @@
             <h4>Secure Payment Processing</h4>
             <img src="{% static 'images/secure_payment.jpg' %}" class="logo">
         </div>
-    </section>
+    </section> 
 
     <script src="{% static 'script.js' %}"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
