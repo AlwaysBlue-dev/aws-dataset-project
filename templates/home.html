@@ -108,7 +108,13 @@
                             <a href="{{ product.file_path }}"> <i class="fa fa-download"></i></a>
                             {%else%}
                             <p class="card-text"><strong>${{ product.price }}</strong></p>
+                            {% if user.is_authenticated %}
+                         
                             <button class="btn btn-sm btn-primary" onclick="addToCart('{{ product.id }}', '{{ product.name }}', '{{ product.price }}', '{{product.username}}')">Add to Cart</button>
+                            {% else %}
+                            <p class="card-text">Please <a href="{% url 'login' %}">log in</a> to buy.</p>
+                            {% endif %}
+                           
                             {%endif%}
                         </div>
                     </div>
@@ -190,7 +196,13 @@
                             <a href="/media/{{ listing.dataset_file_path }}"> <i class="fa fa-download"></i></a>
                             {%else%}
                             <p class="card-text"><strong>${{listing.dataset_price }}</strong></p>
+                            {% if user.is_authenticated %}
+                         
                             <button class="btn btn-sm btn-primary" onclick="addToCart('{{ listing.id }}', '{{ listing.dataset_name }}', '{{ listing.dataset_price }}', '{{listing.username}}')">Add to Cart</button>
+                            {% else %}
+                            <p class="card-text">Please <a href="{% url 'login' %}">log in</a> to buy.</p>
+                            {% endif %}
+                          
                             {%endif%}
                             <!-- Add appropriate link for the file_path of the listing -->
                         </div>
@@ -302,7 +314,13 @@
                             <a href="{{ product.file_path }}"> <i class="fa fa-download"></i></a>
                             {%else%}
                             <p class="card-text"><strong>${{ product.price }}</strong></p>
+                            {% if user.is_authenticated %}
+                         
                             <button class="btn btn-sm btn-primary" onclick="addToCart('{{ product.id }}', '{{ product.name }}', '{{ product.price }}', '{{product.username}}')">Add to Cart</button>
+                            {% else %}
+                            <p class="card-text">Please <a href="{% url 'login' %}">log in</a> to buy.</p>
+                            {% endif %}
+                           
                             {%endif%}
                         </div>
                     </div>
@@ -395,7 +413,13 @@
                             <a href="{{ product.file_path }}"> <i class="fa fa-download"></i></a>
                             {%else%}
                             <p class="card-text"><strong>${{ product.price }}</strong></p>
+                            {% if user.is_authenticated %}
+                         
                             <button class="btn btn-sm btn-primary" onclick="addToCart('{{ product.id }}', '{{ product.name }}', '{{ product.price }}', '{{product.username}}')">Add to Cart</button>
+                            {% else %}
+                            <p class="card-text">Please <a href="{% url 'login' %}">log in</a> to buy.</p>
+                            {% endif %}
+                         
                             {%endif%}
                         </div>
                     </div>

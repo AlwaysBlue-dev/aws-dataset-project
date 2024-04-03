@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %} Success {% endblock %}
+
+{% block content %}
+<div class="container ">
+    <div class="row justify-content-center">
+        <div class="col-md-8 mt-5 mb-5">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title text-center text-success">Thank you for your payment!</h1>
+                    <a href="/purchased_items/" class="d-flex justify-content-center align-items-center">You Can Download Dataset Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Clear the local storage after successful payment
+    localStorage.removeItem('cart');
+</script>
+{% endblock %}

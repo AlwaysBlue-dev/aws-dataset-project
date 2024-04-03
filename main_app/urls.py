@@ -27,5 +27,7 @@ urlpatterns = [
      path('rating/', views.rating, name='rating'),
      path('generate_payment_link/', views.generate_payment_link, name='generate_payment_link'),
      path('payment_success/', views.payment_success, name='payment_success'),
+     path('purchased_items/', views.purchased_items, name='purchased_items'),
+     path('successful_payment/', views.successful_payment, name='successful_payment'),
  
 ]

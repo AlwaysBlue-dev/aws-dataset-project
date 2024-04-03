@@ -98,36 +98,31 @@ setTimeout(function() {
                             </div>
                         </div>
                         <span class="review-no">{{product.total_ratings}} reviews</span>
+
+                        <div class="action mt-2">
+                            {%if product.datasheet_file_path%}
+                            <small class="text-muted"> Datasheet Available</small>
+                            {% else %}
+                                <small class="text-muted">No Datasheet Available</small>
+                            {% endif %}
+                        </div>
+                        
                     </div>
                     <p class="product-description">{{product.description}}</p>
                     <h4 class="price">Current Price: <span class="text-primary">$ {{product.price}}</span></h4>
                     
                     
-                    <div class="action">
+                    {% comment %} <div class="action">
                         <a href="{{ product.file_path }}" style="font-size: 24px;">
                             <i class="fa fa-download"></i> Download Dataset
                         </a>
-                        
-                        {% comment %} <button class="add-to-cart btn btn-default" type="button">Dow</button> {% endcomment %}
-                        
-                    </div>
-                    <div class="action mt-2">
-                        {%if product.datasheet_file_path%}
-                        <a href="/media/{{ product.datasheet_file_path }}" style="font-size: 24px;">
-                            <i class="fa fa-download"></i> Download Datasheet
-                        </a>
-                        {% else %}
-                            <small class="text-muted">No datasheet available</small>
-                        {% endif %}
-                        
-                        {% comment %} <button class="add-to-cart btn btn-default" type="button">Dow</button> {% endcomment %}
-                        
-                    </div>
+                    </div> {% endcomment %}
+
+                   
+
                     <div class="action mt-5">
                         <button style="color: #000;" class="btn btn-sm btn-link"  onclick="openRatingModal('{{ product.id }}')">Data Quality Rating</a></button>
-                        
-                        {% comment %} <button class="add-to-cart btn btn-default" type="button">Dow</button> {% endcomment %}
-                        
+                
                     </div>
                 </div>
             </div>
@@ -238,6 +233,15 @@ setTimeout(function() {
                             </div>
                         </div>
                         <span class="review-no">{{ listing.total_ratings }} reviews</span>
+
+                        <div class="action mt-2">
+                            {%if listing.datasheet_file_path%}
+                            <small class="text-muted">Datasheet Available</small>
+                            {% else %}
+                            <small class="text-muted">No Datasheet Available</small>
+                             {% endif %}
+                        </div>
+
                     </div>
                     <p class="product-description">{{ listing.dataset_description }}</p>
 
@@ -245,30 +249,15 @@ setTimeout(function() {
 
 
                     
-                    <div class="action">
+                    {% comment %} <div class="action">
                         <a href="/media/{{ listing.dataset_file_path}}" style="font-size: 24px;">
                             <i class="fa fa-download"></i> Download Dataset
                         </a>
-                        
-                        {% comment %} <button class="add-to-cart btn btn-default" type="button">Dow</button> {% endcomment %}
-                        
-                    </div>
-                    <div class="action mt-2">
-                        {%if listing.datasheet_file_path%}
-                        <a href="/media/{{ listing.datasheet_file_path }}" style="font-size: 24px;">
-                            <i class="fa fa-download"></i> Download Datasheet
-                        </a>
-                        {% else %}
-                        <small class="text-muted">No datasheet available</small>
-                         {% endif %}
-                        {% comment %} <button class="add-to-cart btn btn-default" type="button">Dow</button> {% endcomment %}
-                        
-                    </div>
+                    </div> {% endcomment %}
+
+                    
                     <div class="action mt-5">
                         <button style="color: #000;" class="btn btn-sm btn-link"  onclick="openRatingModal2('{{ listing.id }}')">Data Quality Rating</a></button>
-                        
-                        {% comment %} <button class="add-to-cart btn btn-default" type="button">Dow</button> {% endcomment %}
-                        
                     </div>
                 </div>
             </div>

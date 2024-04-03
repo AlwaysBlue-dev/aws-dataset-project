@@ -55,7 +55,8 @@ body {
     margin-top: 50px;
     background: #eee;
     padding: 3em;
-    line-height: 1.5em; }
+    line-height: 1.5em;
+    height: 80% !important;}
   
   @media screen and (min-width: 997px) {
     .wrapper {

@@ -432,9 +432,52 @@ def payment_success(request):
         # Clear the stored cart from session after successful purchase
         del request.session['pending_purchase']
 
-        return JsonResponse({'message': 'Payment successful and purchase details saved.'})
+        return render(request, 'successful_payment.html')
+        # return JsonResponse({'message': 'Payment successful and purchase details saved.'})
     else:
         return JsonResponse({'error': 'No items found in the cart.'})
+    
+@login_required(login_url='/login/') 
+def purchased_items(request):
+    # Retrieve all entries of the logged-in user from UserPurchasedItem model
+    purchased_items = UserPurchasedItem.objects.filter(user=request.user)
+
+    # Create an empty list to store the details of purchased items
+    items_details = []
+
+    # Loop through purchased items
+    for item in purchased_items:
+        if item.item_posted_by == 'admin':
+            # If the item is posted by admin, fetch details from Product model
+            product = Product.objects.get(id=item.item_id)
+            items_details.append({
+                'id': product.id,
+                'name': product.name,
+                'price': item.item_price,
+                'posted_by': 'admin',
+                'product_img': product.image,
+                'product_dataset_url': product.file_path,
+                'datasheet_url': product.datasheet_file_path
+            })
+        else:
+            # If the item is posted by a user, fetch details from Listing model
+            listing = Listing.objects.get(id=item.item_id)
+            items_details.append({
+                'id': listing.id,
+                'name': listing.dataset_name,
+                'price': item.item_price,
+                'posted_by': listing.username, 
+                'listing_img': listing.dataset_image,
+                'listing_dataset_url': listing.dataset_file_path,
+                'datasheet_url': listing.datasheet_file_path
+            })
+
+    # Pass the purchased items details to the template
+    return render(request, 'purchased_items.html', {'items_details': items_details})
+
+@login_required(login_url='/login/') 
+def successful_payment(request):
+    return render(request, 'successful_payment.html')
 
 def community(request):
     return render(request, 'community.html')

@@ -58,7 +58,9 @@
                             <i class="fa fa-user" aria-hidden="true"></i> {{ user.username }} <span class="caret"></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-left" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{% url 'account' %}"><i class="fa fa-user" aria-hidden="true"></i> Account</a>
+                            <a class="dropdown-item" href="{% url 'account' %}"><i class="fa fa-user" aria-hidden="true"></i> Account </a>
+                            <div class="dropdown-divider"></div> 
+                            <a class="dropdown-item" href="{% url 'purchased_items' %}"><i class="fa fa-check-circle" aria-hidden="true"></i> Dataset </a>
                             <div class="dropdown-divider"></div> 
                             <a class="dropdown-item" href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i> Logout </a>
                         </div>
