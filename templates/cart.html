@@ -4,7 +4,35 @@
 {% block title %} Cart {% endblock %}
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'cart.css' %}">
-
+<style>
+    /* CSS for the loading indicator */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.5);
+        z-index: 1000;
+        display: none; /* Initially hidden */
+    }
+    .loading-spinner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50px;
+        height: 50px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
 {% endblock %}
 {% block content %}
 <div class="container">
@@ -22,7 +50,10 @@
         </div>
     </div>
 </div>
-
+<!-- Loading indicator -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+</div>
 {% endblock %}
 {% block extra_scripts %}
 
@@ -80,7 +111,21 @@
     // Render the cart when the page loads
     renderCart();
 
+     // Function to handle checkout button click
+     function handleCheckout() {
+        var checkoutButton = document.getElementById('checkout-button');
+        var loadingOverlay = document.getElementById('loadingOverlay');
+
+        // Show loading indicator
+        loadingOverlay.style.display = 'block';
+        
+        // Disable the checkout button to prevent multiple clicks
+        checkoutButton.disabled = true;
+
+    }
+
     function generatePaymentLink() {
+        handleCheckout(); 
         var cart = JSON.parse(localStorage.getItem('cart'));
         if (!cart || cart.length === 0) {
             alert("Your cart is empty!");
@@ -95,11 +140,22 @@
                 'csrfmiddlewaretoken': '{{ csrf_token }}'
             },
             success: function(data) {
-                // Redirect the user to the Stripe Checkout page
-                window.location.href = data.payment_url;
+                 // Hide loading indicator and enable the checkout button
+                 var loadingOverlay = document.getElementById('loadingOverlay');
+                 loadingOverlay.style.display = 'none';
+                 var checkoutButton = document.getElementById('checkout-button');
+                 checkoutButton.disabled = false;
+                
+                 // Redirect the user to the Stripe Checkout page
+                 window.location.href = data.payment_url;
             },
             error: function(xhr, status, error) {
                 console.error(error);
+                 // Hide loading indicator and enable the checkout button
+                 var loadingOverlay = document.getElementById('loadingOverlay');
+                 loadingOverlay.style.display = 'none';
+                 var checkoutButton = document.getElementById('checkout-button');
+                 checkoutButton.disabled = false;
             }
         });
     }

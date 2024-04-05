@@ -30,7 +30,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main_app.apps.MainAppConfig',
-    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -41,14 +40,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    'http://*',  # Allow HTTP requests from all origins
-    'https://*',  # Allow HTTPS requests from all origins
-]
 
 ROOT_URLCONF = 'DataSetWeb.urls'
 
