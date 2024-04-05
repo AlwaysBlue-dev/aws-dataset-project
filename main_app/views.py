@@ -153,7 +153,8 @@ def get_listing_details(request):
                 'dataset_name': listing.dataset_name,
                 'dataset_description': listing.dataset_description,
                 'dataset_image': listing.dataset_image.url,
-                'dataset_file_path': listing.dataset_file_path.url
+                'dataset_file_path': listing.dataset_file_path.url,
+                'dataset_price': listing.dataset_price
             }
             return JsonResponse(data)
         except Listing.DoesNotExist:
@@ -170,6 +171,17 @@ def add_data(request):
         dataset_image = request.FILES.get('image')
         dataset_file_path = request.FILES.get('file')
         datasheet_file_path = request.FILES.get('datas-sheet')
+
+         # Validate if price is positive
+        if dataset_price is not None:
+            try:
+                dataset_price = float(dataset_price)
+                if dataset_price < 0:
+                    messages.error(request, 'Price should be a positive value')
+                    return render(request, 'share_data.html', {'name': dataset_name, 'description': dataset_description})
+            except ValueError:
+                messages.error(request, 'Invalid price format')
+                return render(request, 'share_data.html', {'name': dataset_name, 'description': dataset_description})
 
         error_messages = []
 
@@ -406,7 +418,7 @@ def generate_payment_link(request):
             line_items=line_items,
             mode='payment',
             success_url='http://127.0.0.1:8000/payment_success/',  # Redirect URL after successful payment
-            cancel_url='http://yourwebsite.com/cancel/',    # Redirect URL if the user cancels the payment
+            cancel_url='http://127.0.0.1:8000/cancel/',    # Redirect URL if the user cancels the payment
         )
         request.session['pending_purchase'] = cart
         return JsonResponse({'payment_url': session.url})

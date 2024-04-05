@@ -57,9 +57,9 @@
                         </div>
                         
                         <div class="form-group">
-                            <label for="price" class="font-weight-bold">Price (USD)</label>
-                            <input type="number" class="form-control" id="price" name="price" value='0' style="width: 150px"; readonly>
-                            <small class="form-text text-muted">*We are only selling free products for now</small>
+                            <label for="price" class="font-weight-bold">Price (USD)<span class="text-danger">*</label>
+                            <input type="number" class="form-control" id="price" name="price" min="0" step="0.01" oninput="this.value = this.value.replace(/[^0-9\]/g, '');" placeholder="$" style="width: 150px"; required>
+                           
                         </div>
                         <div class="row">
                             <div class="col-md-4">
@@ -152,7 +152,11 @@
                     <label for="description">Description</label>
                     <textarea class="form-control" id="listing-description" name="description" rows="3"></textarea>
                 </div>
-               
+                <div class="form-group">
+                    <label for="price" class="font-weight-bold">Price (USD)</label>
+                    <input type="number" class="form-control" id="listing-price" name="price" min="0" step="0.01" oninput="this.value = this.value.replace(/[^0-9\]/g, '');" placeholder="$" style="width: 150px"; required>
+                   
+                </div>
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
@@ -229,10 +233,7 @@
                                 <img src="/media/{{ product.dataset_image }}" class="card-img-top" alt="{{ product.dataset_name }}">
                                 <div class="card-body">
                                     <h5 class="card-title text-center">{{ product.dataset_name }}</h5>
-                                {% comment %} <center><span class="card-description-toggle text-center" onclick="toggleDescription('{{ product.id }}')">Show Description</span></center> 
-                                    <div id="description_{{ product.id }}" style="display: none;"> 
-                                    <center><small class="card-text text-center">{{ product.dataset_description }}</small></center> 
-                                    </div> {% endcomment %}
+                               
                                     <div class="rating text-center">
                                         {% if product.avg_ratings == 0 %}
                                             <i class="fa fa-star-o" aria-hidden="true"></i>
@@ -319,10 +320,7 @@
                                 <img src="/media/{{ product.image }}" class="card-img-top" alt="{{ product.name }}">
                                 <div class="card-body">
                                     <h5 class="card-title text-center">{{ product.name }}</h5>
-                                 {% comment %} <center><span class="card-description-toggle text-center" onclick="toggleDescription('{{ product.id }}')">Show Description</span></center> 
-                                     <div id="description_{{ product.id }}" style="display: none;"> 
-                                     <center><small class="card-text text-center">{{ product.description }}</small></center> 
-                                    </div> {% endcomment %}
+                                
                                     <div class="rating text-center">
                                         {% if product.avg_ratings == 0 %}
                                             <i class="fa fa-star-o" aria-hidden="true"></i>
@@ -370,9 +368,7 @@
                                     </div>
                                   <center><small class="text-muted">Posted by: {{ product.username }}</small></center>
                                 </div>
-                                {% comment %} <a href="#" class="btn btn-danger" id="deleteButton{{ product.id }}" data-toggle="modal" data-target="#deleteModal{{ product.id }}">
-                                    <i class="fa fa-trash"></i>
-                                </a> {% endcomment %}
+                              
                                 <div class="card-footer">
                                     <div class="d-flex justify-content-between align-items-center">
                                         {%if product.price == 0%}
@@ -468,18 +464,9 @@ $(document).ready(function() {
                     $('#listing-image').val(response.dataset_image);
                     $('#listing-data').val(response.dataset_file_path);
                     $('#listing-data').val(response.dataseheet_file_path);
+                    $('#listing-price').val(response.dataset_price);
                     $('#listing-details').show();
-                    // Set the value of the image input field
-                    //var imageFileName = response.dataset_image.split('/').pop(); // Get the file name from the URL
-                    //$('#listing-image').val(imageFileName);
-                    //$('#listing-image').show(); // Show the input field
-
-                    // Set the value of the data input field
-                    //var dataFileName = response.dataset_file_path.split('/').pop(); // Get the file name from the URL
-                    //('#listing-data').val(dataFileName);
-                    //$('#listing-data').show(); // Show the input field
-
-                    //$('#listing-details').show();
+                    
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);

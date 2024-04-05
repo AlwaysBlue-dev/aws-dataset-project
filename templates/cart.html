@@ -4,19 +4,25 @@
 {% block title %} Cart {% endblock %}
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'cart.css' %}">
+
 {% endblock %}
 {% block content %}
 <div class="container">
-    <h2>Your Cart</h2>
-    <hr>
-    <div id="cart-items">
-        <!-- Cart items will be displayed here -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-12 col-md-8">
+            <h2 class="text-center">Your Cart</h2>
+            <hr>
+            <div id="cart-items">
+                <!-- Cart items will be displayed here -->
+            </div>
+            <div class="cart-total text-center">
+                Total: <span id="cart-total"></span>
+            </div>
+            <button class="btn btn-primary btn-block mt-4 mb-5"  style="font-size: 18px;" id="checkout-button" onclick="generatePaymentLink()">Proceed to Checkout</button>
+        </div>
     </div>
-    <div class="cart-total">
-        Total: <span id="cart-total"></span>
-    </div>
-    <button class="checkout-button mb-5" onclick="generatePaymentLink()">Proceed to Checkout</button>
 </div>
+
 {% endblock %}
 {% block extra_scripts %}
 
@@ -39,21 +45,30 @@
         cartItemsContainer.innerHTML = ''; // Clear the existing cart items
         cartTotal = 0; // Reset the total price
 
-        // Iterate through cart items and display them
-        cart.forEach(function (item, index) {
-            var cartItemDiv = document.createElement('div');
-            cartItemDiv.classList.add('cart-item');
-            cartItemDiv.innerHTML = `
-                <div class="cart-item-details">
-                    <h4>${item.name}</h4>
-                    <p>Price: ${item.price}</p>
-                </div>
-                <i onclick="removeItemFromCart(${index})" class="fa fa-trash delete-icon text-danger"></i>`;
-            cartItemsContainer.appendChild(cartItemDiv);
+            // Iterate through cart items and display them
+        if (cart.length === 0) {
+            cartItemsContainer.innerHTML = '<p class=text-center>Your cart is empty.</p>';
+            $('.cart-total').hide(); // Hide the total price when cart is empty
+            $('#checkout-button').hide(); // Hide the checkout button when cart is empty
+            $('#footer').addClass('fixed-bottom'); // Apply the fixed position to the footer
+        } else {
+            cart.forEach(function (item, index) {
+                var cartItemDiv = document.createElement('div');
+                cartItemDiv.classList.add('cart-item');
+                cartItemDiv.innerHTML = `
+                    <div class="cart-item-details">
+                        <h4>${item.name}</h4>
+                        <p>Price: ${item.price}</p>
+                    </div>
+                    <i onclick="removeItemFromCart(${index})" class="fa fa-trash delete-icon text-danger"></i>`;
+                cartItemsContainer.appendChild(cartItemDiv);
 
-            // Update total price
-            cartTotal += parseFloat(item.price.replace('$', ''));
-        });
+                // Update total price
+                cartTotal += parseFloat(item.price.replace('$', ''));
+            });
+            $('.cart-total').show(); // Show the total price when cart has items
+            $('#footer').removeClass('fixed-bottom'); // Remove the fixed position from the footer
+        }
 
         // Display total price
         cartTotalElement.textContent = '$' + cartTotal.toFixed(2);

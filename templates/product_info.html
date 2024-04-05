@@ -38,10 +38,7 @@ setTimeout(function() {
                         <div class="tab-pane active" id="pic-1"><img src="/media/{{product.image}}" /></div>
                         <!-- Add more image tabs as needed -->
                     </div>
-                    {% comment %} <ul class="preview-thumbnail nav nav-tabs">
-                        <li class="active"><a data-target="#pic-1" data-toggle="tab"><img src="" /></a></li>
-                        <!-- Add more thumbnail tabs as needed -->
-                    </ul> {% endcomment %}
+                   
                 </div>
                 <div class="details col-md-6">
                     <h3 class="product-title">{{product.name}}</h3>
@@ -111,13 +108,6 @@ setTimeout(function() {
                     <p class="product-description">{{product.description}}</p>
                     <h4 class="price">Current Price: <span class="text-primary">$ {{product.price}}</span></h4>
                     
-                    
-                    {% comment %} <div class="action">
-                        <a href="{{ product.file_path }}" style="font-size: 24px;">
-                            <i class="fa fa-download"></i> Download Dataset
-                        </a>
-                    </div> {% endcomment %}
-
                    
 
                     <div class="action mt-5">
@@ -246,14 +236,6 @@ setTimeout(function() {
                     <p class="product-description">{{ listing.dataset_description }}</p>
 
                     <h4 class="price" >Current Price: <span class="text-primary"> {{ listing.dataset_price }}</span></h4>
-
-
-                    
-                    {% comment %} <div class="action">
-                        <a href="/media/{{ listing.dataset_file_path}}" style="font-size: 24px;">
-                            <i class="fa fa-download"></i> Download Dataset
-                        </a>
-                    </div> {% endcomment %}
 
                     
                     <div class="action mt-5">
