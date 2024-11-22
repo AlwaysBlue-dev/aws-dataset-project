@@ -68,16 +68,28 @@ WSGI_APPLICATION = 'DataSetWeb.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 #MySQL
+# DATABASES = {
+#    'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'pairit_db',
+#         'HOST': 'localhost',
+#         'PORT': '3307',
+#         'USER': 'root',
+#         'PASSWORD': 'root',
+#     }
+# }
+
 DATABASES = {
    'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'pairit_db',
+        'NAME': 'u915858260_pairit_db',
         'HOST': 'localhost',
-        'PORT': '3307',
-        'USER': 'root',
-        'PASSWORD': 'root',
+        'PORT': '3306',
+        'USER': 'pairit',
+        'PASSWORD': 'Pairit123@db',
     }
 }
+
 
 #Sqlite
 # DATABASES = {
